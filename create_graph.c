@@ -6,10 +6,7 @@
 
 typedef unsigned char vertex;
 
-int main(void) {
-  vertex ***graph;
-  srand(time(NULL));
-
+vertex*** mallocGraph(vertex ***graph) {
   if ((graph = (vertex ***) malloc(sizeof(vertex **) * 10)) == NULL) {
     printf("Graph memory allocation error\n");
     exit(1);
@@ -30,16 +27,25 @@ int main(void) {
       }
     }
   }
+  return graph;
+}
 
-  for (vertexCounter = 0; vertexCounter < 10; vertexCounter++) {
-    printf("%d:\t", vertexCounter);
-    for (edgeCounter = 0; edgeCounter < 3; edgeCounter++) {
+int main(void) {
+  vertex ***graph = NULL;
+  graph = mallocGraph(graph);
+
+  srand(time(NULL));
+  int vertexes, edges;
+
+  for (vertexes = 0; vertexes < 10; vertexes++) {
+    printf("%d:\t", vertexes);
+    for (edges = 0; edges < 3; edges++) {
       if (rand() % 2 == 1) {
         int linkedVertex = rand() % 10;
-        graph[vertexCounter][edgeCounter] = *graph[linkedVertex];
+        graph[vertexes][edges] = *graph[linkedVertex];
         printf("%d, ", linkedVertex);
       } else
-        graph[vertexCounter][edgeCounter] = NULL;
+        graph[vertexes][edges] = NULL;
     }
     printf("\n");
    }
