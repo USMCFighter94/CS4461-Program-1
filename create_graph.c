@@ -10,11 +10,11 @@ int main(void) {
   srand(time(NULL));
   int vertexes, edges;
 
-  for (vertexes = 0; vertexes < 10; vertexes++) {
+  for (vertexes = 0; vertexes < NUMBER_OF_BRIDGES; vertexes++) {
     printf("%d:\t", vertexes);
-    for (edges = 0; edges < 3; edges++) {
+    for (edges = 0; edges < MAX_DEGREE_CONNECT; edges++) {
       if (rand() % 2 == 1) {
-        int linkedVertex = rand() % 10;
+        int linkedVertex = rand() % NUMBER_OF_BRIDGES;
         graph[vertexes][edges] = *graph[linkedVertex];
         printf("%d, ", linkedVertex);
       } else
@@ -26,20 +26,20 @@ int main(void) {
 }
 
 vertex*** mallocGraph(vertex ***graph) {
-  if ((graph = (vertex ***) malloc(sizeof(vertex **) * 10)) == NULL) {
+  if ((graph = (vertex ***) malloc(sizeof(vertex **) * NUMBER_OF_BRIDGES)) == NULL) {
     printf("Graph memory allocation error\n");
     exit(1);
   }
 
   int vertexCounter = 0, edgeCounter = 0;
 
-  for (; vertexCounter < 10; vertexCounter++) {
-    if ((graph[vertexCounter] = (vertex **) malloc(sizeof(vertex *) * 3)) == NULL) {
+  for (; vertexCounter < NUMBER_OF_BRIDGES; vertexCounter++) {
+    if ((graph[vertexCounter] = (vertex **) malloc(sizeof(vertex *) * MAX_DEGREE_CONNECT)) == NULL) {
       printf("Edge memory allocation error\n");
       exit(1);
     }
 
-    for (; edgeCounter < 3; edgeCounter++) {
+    for (; edgeCounter < MAX_DEGREE_CONNECT; edgeCounter++) {
       if ((graph[vertexCounter][edgeCounter] = (vertex *) malloc(sizeof(vertex))) == NULL) {
         printf("Vertex memory allocation error\n");
         exit(1);
