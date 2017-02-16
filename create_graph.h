@@ -5,7 +5,7 @@
 #define NUMBER_OF_BRIDGES 10
 typedef unsigned char vertex;
 
-int main(void);
+vertex*** createGraph(void);
 vertex*** mallocGraph(vertex ***graph);
 
 #endif

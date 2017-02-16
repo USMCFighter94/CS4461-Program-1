@@ -3,7 +3,7 @@
 #include <time.h>
 #include "create_graph.h"
 
-int main(void) {
+vertex*** createGraph(void) {
   vertex ***graph = NULL;
   graph = mallocGraph(graph);
 
@@ -22,7 +22,7 @@ int main(void) {
     }
     printf("\n");
    }
-   return 0;
+   return graph;
 }
 
 vertex*** mallocGraph(vertex ***graph) {
