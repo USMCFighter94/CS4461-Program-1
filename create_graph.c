@@ -13,16 +13,17 @@ vertex*** createGraph(void) {
 
   for (vertexes = 0; vertexes < NUMBER_OF_BRIDGES; vertexes++) {
     printf("%d:\t", vertexes);
-    for (edges = 0; edges < MAX_DEGREE; edges++) {
+    for (edges = 0, usedVertexCounter = 0; edges < MAX_DEGREE; edges++) {
       if (rand() % 2 == 1) {
         randEdge = getRandomEdge();
         if (randEdge != -1) {
           graph[vertexes][edges] = *graph[randEdge];
           printf("%d, ", randEdge);
         } else
-          break;
+            break;
       } else {
-        if (edges == (MAX_DEGREE - 1) && usedVertexCounter == 0) { // Make sure every bridge has at least one connection
+        // Make sure every bridge has at least one connection
+        if (edges == (MAX_DEGREE - 1) && usedVertexCounter == 0) {
           randEdge = getRandomEdge();
           graph[vertexes][edges] = *graph[randEdge];
           printf("%d, ", randEdge);
@@ -31,7 +32,7 @@ vertex*** createGraph(void) {
       }
     }
     printf("\n");
-    usedVertexCounter = 0; // Reset edge trackers
+    // Reset edge trackers
     for (i = 0; i < MAX_DEGREE; i++)
       usedVertex[i] = -1;
    }
@@ -44,13 +45,12 @@ int getRandomEdge() {
   if (usedVertexCounter == 1) // First edge in graph, can just return without check
     return linkedVertex;
 
-  for (i = 0; i < MAX_DEGREE; i++) { // Check if edge already exists
+  for (i = 0; i < MAX_DEGREE; i++) // Check if edge already exists
     if (i != (usedVertexCounter - 1) && usedVertex[i] == linkedVertex) {
       linkedVertex = -1;
       usedVertexCounter--;
       break;
     }
-  }
   return linkedVertex;
 }
 
