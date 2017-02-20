@@ -47,8 +47,8 @@ public class Network {
 				node.setDistanceToRoot(tmpMsg.getDistance() + 1);
 			}
 			System.out.println("<" + node.getRootPort() + ", " + node.getDistanceToRoot() + ", " + node.getVertexNum() + ">");
-			ArrayList<Message> nullArray = new ArrayList<>();
-			node.setLastReceievedMessages(nullArray);
+//			ArrayList<Message> nullArray = new ArrayList<>();
+//			node.setLastReceievedMessages(nullArray);
 		}
 	}
 
@@ -62,6 +62,20 @@ public class Network {
 		
 		System.out.println("");
 
+		for (int i = 0; i < 10; i++) {
+			Node node = graph.get(i);
+			checkForNewRoot(node);
+		}
+		
+		System.out.println("");
+		
+		for (int i = 0; i < 10; i++) {
+			Node node = graph.get(i);
+			checkForNewRoot(node);
+		}
+		
+		System.out.println("");
+		
 		for (int i = 0; i < 10; i++) {
 			Node node = graph.get(i);
 			checkForNewRoot(node);
