@@ -3,89 +3,106 @@
 #include <time.h>
 #include "create_graph.h"
 
+List* graph[NUMBER_OF_BRIDGES] = {0};
 int usedVertex[MAX_DEGREE] = {-1}, usedVertexCounter = 0;
 
-vertex*** createGraph(void) {
-  vertex ***graph = mallocGraph();
-  int vertexes, edges, randEdge, i;
+void mallocGraph(void) {
+  int i;
+  for (i = 0; i < NUMBER_OF_BRIDGES; i++){
+    graph[i] = (List *) malloc(sizeof(List));
+    graph[i]->head = NULL;
+  }
+}
 
+List** createGraph(void) {
+  mallocGraph();
+  int vertex, edge, randEdge, i;
   srand(time(NULL));
 
-  for (vertexes = 0; vertexes < NUMBER_OF_BRIDGES; vertexes++) {
-    printf("%d:\t", vertexes);
-    for (edges = 0, usedVertexCounter = 0; edges < MAX_DEGREE; edges++) {
+  for (vertex = 0; vertex < NUMBER_OF_BRIDGES; vertex++) {
+    printf("%d:\t", vertex);
+    for (edge = 0, usedVertexCounter = 0; edge < MAX_DEGREE; edge++) {
       if (rand() % 2 == 1) {
         randEdge = getRandomEdge();
-        if (randEdge != -1) {
-          graph[vertexes][edges] = *graph[randEdge];
+        if (randEdge != -1 && randEdge != vertex) {
+          addNode(vertex, randEdge);
           printf("%d, ", randEdge);
         } else
             break;
       } else {
         /* Make sure every bridge has at least one connection */
-        if (edges == (MAX_DEGREE - 1) && usedVertexCounter == 0) {
+        if (edge == (MAX_DEGREE - 1) && usedVertexCounter == 0) {
           randEdge = getRandomEdge();
-          graph[vertexes][edges] = *graph[randEdge];
+          addNode(vertex, randEdge);
           printf("%d, ", randEdge);
-        } else
-            graph[vertexes][edges] = NULL;
+        }
       }
     }
     printf("\n");
     /* Reset edge trackers */
     for (i = 0; i < MAX_DEGREE; i++)
-      usedVertex[i] = -1;
-   }
-   return graph;
+    usedVertex[i] = -1;
+  }
+  return graph;
 }
 
 int getRandomEdge() {
   int linkedVertex = rand() % NUMBER_OF_BRIDGES, i; /* Get random bridge */
   usedVertex[usedVertexCounter++] = linkedVertex; /* Add it to the list of used */
   if (usedVertexCounter == 1) /* First edge in graph, can just return without check */
-    return linkedVertex;
+  return linkedVertex;
 
   for (i = 0; i < MAX_DEGREE; i++) /* Check if edge already exists */
-    if (i != (usedVertexCounter - 1) && usedVertex[i] == linkedVertex) {
-      linkedVertex = -1;
-      usedVertexCounter--;
-      break;
-    }
+  if (i != (usedVertexCounter - 1) && usedVertex[i] == linkedVertex) {
+    linkedVertex = -1;
+    usedVertexCounter--;
+    break;
+  }
   return linkedVertex;
 }
 
-vertex*** mallocGraph(void) {
-  vertex ***graph = NULL;
-  int vertexCounter = 0, edgeCounter = 0;
-
-  if ((graph = (vertex ***) malloc(sizeof(vertex **) * NUMBER_OF_BRIDGES)) == NULL) {
-    printf("Graph memory allocation error\n");
-    exit(1);
+void addNode(int nodeA, int nodeB) {
+  if (graph[nodeA]->head == NULL) {
+    Node* src = (Node *) malloc(sizeof(Node));
+    src->vertexNum = nodeA;
+    src->next = NULL;
+    graph[nodeA]->head = src;
   }
 
-  for (; vertexCounter < NUMBER_OF_BRIDGES; vertexCounter++) {
-    if ((graph[vertexCounter] = (vertex **) malloc(sizeof(vertex *) * MAX_DEGREE)) == NULL) {
-      printf("Edge memory allocation error\n");
-      exit(1);
-    }
+  Node* dest = (Node *) malloc(sizeof(Node));
+  dest->vertexNum = nodeB;
+  dest->next = NULL;
+  Node* tmp = graph[nodeA]->head;
 
-    for (; edgeCounter < MAX_DEGREE; edgeCounter++) {
-      if ((graph[vertexCounter][edgeCounter] = (vertex *) malloc(sizeof(vertex))) == NULL) {
-        printf("Vertex memory allocation error\n");
-        exit(1);
-      }
-    }
-  }
-  return graph;
+  while (tmp->next != NULL)
+    tmp = tmp->next;
+
+  tmp->next = dest;
 }
 
-void freeGraph(vertex ***graph) {
-  int i = 0, j = 0;
-  for (; i < NUMBER_OF_BRIDGES; i++) {
-    for (; j < MAX_DEGREE; j++) {
-      free(graph[i][j]);
+void printList(void){
+  int i;
+  for (i = 0; i < NUMBER_OF_BRIDGES; i++) {
+    Node* p = graph[i]->head;
+    printf("%d:\t", i);
+    while (p){
+      int num = p->vertexNum;
+      if (num != i)
+        printf ("%d, ", p->vertexNum);
+      p = p->next;
     }
-    free(graph[i]);
+    printf ("\n");
   }
-  free(graph);
+}
+
+void freeGraph(void){
+  int i;
+  for (i = 0; i < NUMBER_OF_BRIDGES; i++){
+    Node* p = graph[i]->head;
+    while (p) {
+      p = p->next;
+      free(p);
+    }
+    free(p);
+  }
 }

@@ -3,9 +3,10 @@
 #include "create_graph.h"
 
 int main(void) {
-  vertex ***graph = createGraph();
-  printf("Pointer == %p\n", &graph);
+  List** graph = createGraph();
 
-  freeGraph(graph);
+  printf("\n\n\n");
+  printList();
+  freeGraph();
   return 0;
 }
