@@ -12,12 +12,12 @@ typedef struct Message {
 
 typedef struct Node {
     int vertexNum, distanceToRoot, rootPort, designatedPort, blockedPort;
-    struct Node *next;
+    struct Node* next;
     Message lastReceievedMessages[3];
 } Node;
 
 typedef struct List{
-    Node *head;
+    Node* head;
 } List;
 
 void mallocGraph(void);

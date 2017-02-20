@@ -2,7 +2,7 @@
 CC = gcc
 EXEC = networkMST
 CCFLAGS = -g -pedantic -Wall -Wextra
-OBJS = main.o create_graph.o
+OBJS = main1.o create_graph.o
 
 ${EXEC}: ${OBJS}
 	${CC} ${CCFLAGS} -lm -o ${EXEC} ${OBJS}
@@ -16,5 +16,5 @@ run: ${EXEC}
 clean:
 	rm -f ${EXEC} ${OBJS}
 
-main.o: main.c
+main1.o: main1.c
 create_graph.o: create_graph.c create_graph.h
