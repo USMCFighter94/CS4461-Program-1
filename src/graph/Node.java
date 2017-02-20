@@ -1,9 +1,9 @@
-package helpers;
+package graph;
 
 import java.util.ArrayList;
 
 public class Node {
-	int vertexNum, distanceToRoot, rootPort, designatedPort, blockedPort;
+	int vertexNum, distanceToRoot, rootPort, designatedPort = -1, blockedPort = -1;
     ArrayList<Integer> connectedBridges = new ArrayList<>();
     ArrayList<Message> lastReceievedMessages = new ArrayList<>();
     
@@ -53,6 +53,10 @@ public class Node {
 
 	public void setConnectedBridges(ArrayList<Integer> connectedBridges) {
 		this.connectedBridges = connectedBridges;
+	}
+	
+	public void addConnectedBridge(int bridge) {
+		connectedBridges.add(bridge);
 	}
 	
 	public ArrayList<Message> getLastReceievedMessages() {

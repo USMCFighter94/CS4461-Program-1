@@ -1,4 +1,4 @@
-package helpers;
+package graph;
 
 public class Message {
 	int sourceNode = 0, rootNode = 0, distance = 0;

@@ -1,6 +1,6 @@
-package create;
+package graph;
 
-import helpers.Node;
+import graph.Node;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -13,44 +13,58 @@ public class CreateGraph {
 
 	public ArrayList<Node> createGraph() {
 		int vertex, edge, randEdge, i;
+		
+		for (vertex = 0; vertex < 10; vertex++) { // Initialize all nodes
+			Node newNode = new Node();
+			ArrayList<Integer> edgeList = new ArrayList<>();
+			
+			newNode.setVertexNum(vertex);
+			newNode.setRootPort(vertex);
+			newNode.setDistanceToRoot(0);
+			newNode.setConnectedBridges(edgeList);
+			
+			graph.add(newNode);
+		}
 
 		for (vertex = 0; vertex < 10; vertex++) {
 			System.out.print(vertex + ":\t");
-			Node newNode = new Node();
-			newNode.setVertexNum(vertex);
 
-			ArrayList<Integer> edgeList = new ArrayList<>();
+			ArrayList<Integer> edgeList = graph.get(vertex).getConnectedBridges();
 			for (edge = 0, usedVertexCounter = 0; edge < 3; edge++) {
-
-				if (randInt(0, 1) == 1) {
+				if (randInt(0, 1) == 1 || edge == 0) { // random unless first time to ensure every vertex has at least one
 					randEdge = getRandomEdge();
 					if (randEdge != -1 && randEdge != vertex) {
 						edgeList.add(randEdge);
+						addToConnectedBridge(randEdge, vertex);
 						System.out.print(randEdge + ", ");
 						randEdge = -1;
 					} else
 						continue;
-				} else {
-					/* Make sure every bridge has at least one connection to start */
-					if (edge == (2) && usedVertexCounter == 0) {
-						randEdge = getRandomEdge();
-						edgeList.add(randEdge);
-						System.out.print(randEdge + ", ");
-						randEdge = -1;
-					}
 				}
 			}
 			System.out.println("");
 			/* Reset edge trackers */
 			for (i = 0; i < 3; i++)
 				usedVertex[i] = -1;
-
-			newNode.setConnectedBridges(edgeList);
-			newNode.setRootPort(vertex);
-			newNode.setDistanceToRoot(0);
-			graph.add(newNode);
 		}
 		return graph;
+	}
+	
+	void addToConnectedBridge(int source, int edgePair) {
+		ArrayList<Integer> edgeList = graph.get(source).getConnectedBridges();
+		boolean found = false;
+		
+		for (int i = 0; i < edgeList.size(); i++) {
+			if (edgeList.get(i) == edgePair) {
+				found = true;
+				break;
+			}
+		}
+		
+		if (!found) {
+			edgeList.add(edgePair);
+			graph.get(source).setConnectedBridges(edgeList);
+		}
 	}
 
 	int getRandomEdge() {
