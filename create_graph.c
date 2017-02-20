@@ -8,7 +8,7 @@ int usedVertex[MAX_DEGREE] = {-1}, usedVertexCounter = 0;
 
 void mallocGraph(void) {
   int i;
-  for (i = 0; i < NUMBER_OF_BRIDGES; i++){
+  for (i = 0; i < NUMBER_OF_BRIDGES; i++) {
     graph[i] = (List *) malloc(sizeof(List));
     graph[i]->head = NULL;
   }
@@ -27,21 +27,23 @@ List** createGraph(void) {
         if (randEdge != -1 && randEdge != vertex) {
           addNode(vertex, randEdge);
           printf("%d, ", randEdge);
+          randEdge = -1;
         } else
             break;
       } else {
-        /* Make sure every bridge has at least one connection */
+        /* Make sure every bridge has at least one connection to start */
         if (edge == (MAX_DEGREE - 1) && usedVertexCounter == 0) {
           randEdge = getRandomEdge();
           addNode(vertex, randEdge);
           printf("%d, ", randEdge);
+          randEdge = -1;
         }
       }
     }
     printf("\n");
     /* Reset edge trackers */
     for (i = 0; i < MAX_DEGREE; i++)
-    usedVertex[i] = -1;
+      usedVertex[i] = -1;
   }
   return graph;
 }
@@ -50,14 +52,14 @@ int getRandomEdge() {
   int linkedVertex = rand() % NUMBER_OF_BRIDGES, i; /* Get random bridge */
   usedVertex[usedVertexCounter++] = linkedVertex; /* Add it to the list of used */
   if (usedVertexCounter == 1) /* First edge in graph, can just return without check */
-  return linkedVertex;
+    return linkedVertex;
 
   for (i = 0; i < MAX_DEGREE; i++) /* Check if edge already exists */
-  if (i != (usedVertexCounter - 1) && usedVertex[i] == linkedVertex) {
-    linkedVertex = -1;
-    usedVertexCounter--;
-    break;
-  }
+    if (i != (usedVertexCounter - 1) && usedVertex[i] == linkedVertex) {
+      linkedVertex = -1;
+      usedVertexCounter--;
+      break;
+    }
   return linkedVertex;
 }
 
@@ -97,7 +99,7 @@ void printList(void){
 
 void freeGraph(void){
   int i;
-  for (i = 0; i < NUMBER_OF_BRIDGES; i++){
+  for (i = 0; i < NUMBER_OF_BRIDGES; i++) {
     Node* p = graph[i]->head;
     while (p) {
       p = p->next;
