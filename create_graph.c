@@ -7,9 +7,9 @@ int usedVertex[MAX_DEGREE] = {-1}, usedVertexCounter = 0;
 
 vertex*** createGraph(void) {
   vertex ***graph = mallocGraph();
+  int vertexes, edges, randEdge, i;
 
   srand(time(NULL));
-  int vertexes, edges, randEdge, i;
 
   for (vertexes = 0; vertexes < NUMBER_OF_BRIDGES; vertexes++) {
     printf("%d:\t", vertexes);
@@ -22,7 +22,7 @@ vertex*** createGraph(void) {
         } else
             break;
       } else {
-        // Make sure every bridge has at least one connection
+        /* Make sure every bridge has at least one connection */
         if (edges == (MAX_DEGREE - 1) && usedVertexCounter == 0) {
           randEdge = getRandomEdge();
           graph[vertexes][edges] = *graph[randEdge];
@@ -32,7 +32,7 @@ vertex*** createGraph(void) {
       }
     }
     printf("\n");
-    // Reset edge trackers
+    /* Reset edge trackers */
     for (i = 0; i < MAX_DEGREE; i++)
       usedVertex[i] = -1;
    }
@@ -40,12 +40,12 @@ vertex*** createGraph(void) {
 }
 
 int getRandomEdge() {
-  int linkedVertex = rand() % NUMBER_OF_BRIDGES, i; // Get random bridge
-  usedVertex[usedVertexCounter++] = linkedVertex; // Add it to the list of used
-  if (usedVertexCounter == 1) // First edge in graph, can just return without check
+  int linkedVertex = rand() % NUMBER_OF_BRIDGES, i; /* Get random bridge */
+  usedVertex[usedVertexCounter++] = linkedVertex; /* Add it to the list of used */
+  if (usedVertexCounter == 1) /* First edge in graph, can just return without check */
     return linkedVertex;
 
-  for (i = 0; i < MAX_DEGREE; i++) // Check if edge already exists
+  for (i = 0; i < MAX_DEGREE; i++) /* Check if edge already exists */
     if (i != (usedVertexCounter - 1) && usedVertex[i] == linkedVertex) {
       linkedVertex = -1;
       usedVertexCounter--;
@@ -54,15 +54,15 @@ int getRandomEdge() {
   return linkedVertex;
 }
 
-vertex*** mallocGraph() {
+vertex*** mallocGraph(void) {
   vertex ***graph = NULL;
+  int vertexCounter = 0, edgeCounter = 0;
 
   if ((graph = (vertex ***) malloc(sizeof(vertex **) * NUMBER_OF_BRIDGES)) == NULL) {
     printf("Graph memory allocation error\n");
     exit(1);
   }
 
-  int vertexCounter = 0, edgeCounter = 0;
   for (; vertexCounter < NUMBER_OF_BRIDGES; vertexCounter++) {
     if ((graph[vertexCounter] = (vertex **) malloc(sizeof(vertex *) * MAX_DEGREE)) == NULL) {
       printf("Edge memory allocation error\n");
@@ -77,4 +77,15 @@ vertex*** mallocGraph() {
     }
   }
   return graph;
+}
+
+void freeGraph(vertex ***graph) {
+  int i = 0, j = 0;
+  for (; i < NUMBER_OF_BRIDGES; i++) {
+    for (; j < MAX_DEGREE; j++) {
+      free(graph[i][j]);
+    }
+    free(graph[i]);
+  }
+  free(graph);
 }

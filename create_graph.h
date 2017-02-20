@@ -4,10 +4,11 @@
 #define MAX_DEGREE 3
 #define MIN_DEGREE 1
 #define NUMBER_OF_BRIDGES 10
-typedef unsigned char vertex;
+typedef unsigned int vertex;
 
-vertex*** createGraph(void);
 vertex*** mallocGraph(void);
+vertex*** createGraph(void);
+void freeGraph(vertex***);
 int getRandomEdge(void);
 
 #endif
