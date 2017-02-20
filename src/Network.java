@@ -9,33 +9,33 @@ public class Network {
 	private static ArrayList<Node> graph;
 
 	static void sendMessage(int believedRoot, int distanceFromRoot, int IDOfNode, int dest) {
-		System.out.println("<" + believedRoot + ", " + distanceFromRoot + ", " + IDOfNode + ">");
+		System.out.println("<" + believedRoot + ", " + distanceFromRoot + ", " + IDOfNode + ">"); // Print out current message
 
 		Message newMessage = new Message();
 		newMessage.setSourceNode(IDOfNode);
 		newMessage.setRootNode(believedRoot);
 		newMessage.setDistance(distanceFromRoot);
 
-		graph.get(dest).addLastReceivedMessage(newMessage);
+		graph.get(dest).addLastReceivedMessage(newMessage); // Send message to destination
 	}
 
-	static void initConfigMessage(Node bridge) {
-		int nodeNum = bridge.getVertexNum();
+	static void message(Node bridge) {
+		int nodeNum = bridge.getVertexNum(), root = bridge.getRootPort(), distance = bridge.getDistanceToRoot();
 		ArrayList<Integer> connected = bridge.getConnectedBridges();
 
 		for (int i = 0; i < connected.size(); i++) {
 			int dest = connected.get(i);
-			sendMessage(nodeNum, 0, nodeNum, dest);
+			sendMessage(root, distance, nodeNum, dest);
 		}
 	}
-	
+
 	static void checkForNewRoot(Node node) {
 		ArrayList<Message> messages = node.getLastReceievedMessages();
-		
+
 		for (int i = 0; i < messages.size(); i++) {
 			Message tmpMsg = messages.get(i);
-			int msgRoot = tmpMsg.getRootNode(), nodeRoot = node.getRootPort();
-			
+			int msgRoot = tmpMsg.getRootNode(), nodeRoot = node.getRootPort(), source = tmpMsg.getSourceNode(), current = node.getVertexNum();
+
 			if (msgRoot < nodeRoot) { // This message is from a root bridge with a smaller ID, so update
 				node.setRootPort(msgRoot);
 				node.setDistanceToRoot(tmpMsg.getDistance() + 1);
@@ -46,39 +46,43 @@ public class Network {
 				node.setRootPort(msgRoot);
 				node.setDistanceToRoot(tmpMsg.getDistance() + 1);
 			}
-			System.out.println("<" + node.getRootPort() + ", " + node.getDistanceToRoot() + ", " + node.getVertexNum() + ">");
-//			ArrayList<Message> nullArray = new ArrayList<>();
-//			node.setLastReceievedMessages(nullArray);
+
+			if (source > current) // This is now a designated port
+				node.setDesignatedPort(source);
+			else
+				node.setBlockedPort(source);
 		}
 	}
 
 	public static void main(String[] args) {
+		int numWithIncorrectRoot = 0;
 		CreateGraph create = new CreateGraph();
 		graph = create.createGraph();
 
-		for (int i = 0; i < 10; i++) {
-			initConfigMessage(graph.get(i));
-		}
-		
-		System.out.println("");
+//		do {
+		for (int i = 0; i < 50; i++) {
+			numWithIncorrectRoot = 0;
+			for (int j = 0; j < 10; j++)
+				message(graph.get(j));
 
-		for (int i = 0; i < 10; i++) {
-			Node node = graph.get(i);
-			checkForNewRoot(node);
-		}
-		
-		System.out.println("");
-		
-		for (int i = 0; i < 10; i++) {
-			Node node = graph.get(i);
-			checkForNewRoot(node);
-		}
-		
-		System.out.println("");
-		
-		for (int i = 0; i < 10; i++) {
-			Node node = graph.get(i);
-			checkForNewRoot(node);
+			System.out.println("");
+
+			for (int j = 0; j < 10; j++) {
+				Node node = graph.get(j);
+				checkForNewRoot(node);
+				message(node);
+			}
+
+			System.out.println("");
+
+			for (int j = 0; j < 10; j++) {
+				Node node = graph.get(j);
+				if (node.getRootPort() == node.getVertexNum() && node.getVertexNum() != 0)
+					numWithIncorrectRoot++;
+			}
+			System.out.println("Number with Incorrect Root = "  + numWithIncorrectRoot);
+			System.out.println("");
+//		} while (numWithIncorrectRoot != 0);
 		}
 	}
 }

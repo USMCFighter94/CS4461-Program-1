@@ -47,6 +47,7 @@ public class CreateGraph {
 
 			newNode.setConnectedBridges(edgeList);
 			newNode.setRootPort(vertex);
+			newNode.setDistanceToRoot(0);
 			graph.add(newNode);
 		}
 		return graph;
