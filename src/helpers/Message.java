@@ -1,7 +1,7 @@
 package helpers;
 
 public class Message {
-	int sourceNode, rootNode, distance;
+	int sourceNode = 0, rootNode = 0, distance = 0;
 
 	public int getSourceNode() {
 		return sourceNode;

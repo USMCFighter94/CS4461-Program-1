@@ -4,7 +4,6 @@ import create.CreateGraph;
 
 import java.util.ArrayList;
 
-
 public class Network {
 
 	private static ArrayList<Node> graph;
@@ -29,6 +28,29 @@ public class Network {
 			sendMessage(nodeNum, 0, nodeNum, dest);
 		}
 	}
+	
+	static void checkForNewRoot(Node node) {
+		ArrayList<Message> messages = node.getLastReceievedMessages();
+		
+		for (int i = 0; i < messages.size(); i++) {
+			Message tmpMsg = messages.get(i);
+			int msgRoot = tmpMsg.getRootNode(), nodeRoot = node.getRootPort();
+			
+			if (msgRoot < nodeRoot) { // This message is from a root bridge with a smaller ID, so update
+				node.setRootPort(msgRoot);
+				node.setDistanceToRoot(tmpMsg.getDistance() + 1);
+			} else if (msgRoot < nodeRoot && tmpMsg.getDistance() < node.getDistanceToRoot()) { // Claims same root, but shorter distance
+				node.setRootPort(msgRoot);
+				node.setDistanceToRoot(tmpMsg.getDistance() + 1);
+			} else if (msgRoot < nodeRoot && tmpMsg.getDistance() == node.getDistanceToRoot() && tmpMsg.getSourceNode() < node.getVertexNum()) { // Same root and distance, but smaller ID
+				node.setRootPort(msgRoot);
+				node.setDistanceToRoot(tmpMsg.getDistance() + 1);
+			}
+			System.out.println("<" + node.getRootPort() + ", " + node.getDistanceToRoot() + ", " + node.getVertexNum() + ">");
+			ArrayList<Message> nullArray = new ArrayList<>();
+			node.setLastReceievedMessages(nullArray);
+		}
+	}
 
 	public static void main(String[] args) {
 		CreateGraph create = new CreateGraph();
@@ -38,20 +60,11 @@ public class Network {
 			initConfigMessage(graph.get(i));
 		}
 		
-
 		System.out.println("");
 
 		for (int i = 0; i < 10; i++) {
-			Node p = graph.get(i);
-			ArrayList<Message> messages = p.getLastReceievedMessages();
-
-			if (messages.size() == 0)
-				continue;
-
-			for (int j = 0; j < 1; j++) {
-				Message tmpMsg = p.getLastReceievedMessages().get(j);
-				System.out.println("<" + tmpMsg.getRootNode() + ", " + tmpMsg.getDistance() + ", " + tmpMsg.getSourceNode() + ">");
-			}
+			Node node = graph.get(i);
+			checkForNewRoot(node);
 		}
 	}
 }

@@ -46,6 +46,7 @@ public class CreateGraph {
 				usedVertex[i] = -1;
 
 			newNode.setConnectedBridges(edgeList);
+			newNode.setRootPort(vertex);
 			graph.add(newNode);
 		}
 		return graph;
